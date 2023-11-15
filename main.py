@@ -1,11 +1,20 @@
 from flask import Flask, request, jsonify, redirect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import hashlib
 import os
 
 
-app = Flask(__name__)
-url_mapping = {}
 shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'localhost:5000')
+default_rate_limit = os.environ.get('DEFAULT_RATE_LIMIT', '2 per second')
+
+app = Flask(__name__)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=[default_rate_limit]
+)
+url_mapping = {}
 
 
 def encode_url(original):
@@ -16,6 +25,7 @@ def encode_url(original):
 
 
 @app.post('/encode')
+@limiter.limit(default_rate_limit)
 def encode():
     data = request.get_json()
     original_url = data.get('url')
@@ -29,6 +39,7 @@ def encode():
 
 
 @app.get('/decode')
+@limiter.limit(default_rate_limit)
 def decode():
     data = request.get_json()
     short_code = data.get('short_code')
@@ -43,6 +54,7 @@ def decode():
 
 
 @app.get('/<short_code>')
+@limiter.limit(default_rate_limit)
 def redirect_to(short_code):
     if short_code in url_mapping:
         url = url_mapping[short_code]
