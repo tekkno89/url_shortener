@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 url_mapping = {}
-shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'localhost')
+shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'localhost:5000')
 
 
 def encode_url(original):
@@ -25,7 +25,21 @@ def encode():
     
     short_url = encode_url(original_url)
 
-    return jsonify({'short_url': f'{shortener_domain}:5000/{short_url}'}), 200
+    return jsonify({'short_url': f'{shortener_domain}/{short_url}'}), 200
+
+
+@app.get('/decode')
+def decode():
+    data = request.get_json()
+    short_url = data.get('short_code')
+
+    if not short_url:
+        return jsonify({'error': 'missing URL parameter'}), 400
+    
+    if short_url in url_mapping:
+        return jsonify({'original_url': f'{url_mapping[short_url]}'}), 200
+    else:
+        return jsonify({'error': 'URL not found', 'url': f'{short_url}'}), 404
 
 
 
