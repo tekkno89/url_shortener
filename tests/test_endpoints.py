@@ -10,7 +10,8 @@ def test_encode():
 
     response = app.test_client().post('/encode', data=json.dumps(data), headers=headers)
     assert response.status_code == 200
-    assert response.json['short_url'] == 'localhost:5000/d4c9d902'
+    assert response.json['short_url'] == 'http://localhost:5000/d4c9d902'
+    assert response.json['short_code'] == 'd4c9d902'
 
 
 def test_decode():

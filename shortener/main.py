@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'localhost:5000')
+shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'http://localhost:5000')
 default_rate_limit = os.environ.get('DEFAULT_RATE_LIMIT', '2 per second')
 
 # Rate Limiter
@@ -39,7 +39,7 @@ def encode():
     
     short_url = encode_url(original_url)
 
-    return jsonify({'short_url': f'{shortener_domain}/{short_url}'}), 200
+    return jsonify({'short_url': f'{shortener_domain}/{short_url}', 'short_code': f'{short_url}'}), 200
 
 
 @app.get('/decode')
