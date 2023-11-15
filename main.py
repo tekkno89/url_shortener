@@ -28,18 +28,18 @@ def encode():
     return jsonify({'short_url': f'{shortener_domain}/{short_url}'}), 200
 
 
-# @app.get('/decode')
-# def decode():
-#     data = request.get_json()
-#     short_code = data.get('short_code')
+@app.get('/decode')
+def decode():
+    data = request.get_json()
+    short_code = data.get('short_code')
 
-#     if not short_code:
-#         return jsonify({'error': 'missing URL parameter'}), 400
+    if not short_code:
+        return jsonify({'error': 'missing URL parameter'}), 400
     
-#     if short_code in url_mapping:
-#         return jsonify({'original_url': f'{url_mapping[short_code]}'}), 200
-#     else:
-#         return jsonify({'error': 'URL not found', 'url': f'{short_code}'}), 404
+    if short_code in url_mapping:
+        return jsonify({'original_url': f'{url_mapping[short_code]}'}), 200
+    else:
+        return jsonify({'error': 'URL not found', 'url': f'{short_code}'}), 404
 
 
 @app.get('/<short_code>')
