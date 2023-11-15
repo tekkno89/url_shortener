@@ -5,15 +5,19 @@ import hashlib
 import os
 
 
+app = Flask(__name__)
+
 shortener_domain = os.environ.get('SHORTENER_DOMAIN', 'localhost:5000')
 default_rate_limit = os.environ.get('DEFAULT_RATE_LIMIT', '2 per second')
 
-app = Flask(__name__)
+# Rate Limiter
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=[default_rate_limit]
 )
+
+# Memory Store for URLs
 url_mapping = {}
 
 
